@@ -62,6 +62,9 @@ CRON_FILE = '/etc/cron.d/NodeUpdate.cron'
 
 YUM_PATH = "/usr/bin/yum"
 
+RPM_PATH = "/bin/rpm"
+
+
 # location of file containing http/https proxy info, if needed
 PROXY_FILE = '/etc/planetlab/http_proxy'
 
@@ -72,6 +75,16 @@ REBOOT_FLAG = '/etc/planetlab/update-reboot'
 
 # location of directory containing boot server ssl certs
 SSL_CERT_DIR='/mnt/cdrom/bootme/cacert/'
+
+# file containing list of extra groups to attempt to update,
+# if necessary.
+EXTRA_GROUPS_FILE= '/etc/planetlab/extra-node-groups'
+
+# file containing a list of rpms that we should attempt to delete
+# before we updating everything else. this list is not
+# removed with 'yum remove', because that could accidently remove
+# dependency rpms that were not intended to be deleted.
+DELETE_RPM_LIST_FILE= '/etc/planetlab/delete-rpm-list'
 
 
 # print out a message only if we are displaying output
@@ -155,11 +168,53 @@ class NodeUpdate:
         os.system( "%s --sslcertdir=%s -y update" %
                    (YUM_PATH,SSL_CERT_DIR) )
 
+        Message( "\nChecking for extra groups to update" )
+        if os.access(EXTRA_GROUPS_FILE, os.R_OK) and \
+           os.path.isfile(EXTRA_GROUPS_FILE):
+            extra_groups_contents= file(EXTRA_GROUPS_FILE).read()
+            extra_groups_contents= string.strip(extra_groups_contents)
+            if extra_groups_contents == "":
+                Message( "No extra groups found in file." )
+            else:
+                for group in string.split(extra_groups_contents,"\n"):
+                    Message( "\nUpdating %s group" % group )
+                    os.system( "%s --sslcertdir=%s -y groupupdate \"%s\"" %
+                               (YUM_PATH,SSL_CERT_DIR,group) )
+        else:
+            Message( "No extra groups file found" )
+            
         if os.access(REBOOT_FLAG, os.R_OK) and os.path.isfile(REBOOT_FLAG) and self.doReboot:
             Message( "\nAt least one update requested the system be rebooted" )
             self.ClearRebootFlag()
             os.system( "/sbin/shutdown -r now" )
+
             
+    def RemoveRPMS( self ):
+
+        Message( "\nLooking for RPMs to be deleted." )
+        if os.access(DELETE_RPM_LIST_FILE, os.R_OK) and \
+           os.path.isfile(DELETE_RPM_LIST_FILE):
+            rpm_list_contents= file(DELETE_RPM_LIST_FILE).read()
+            rpm_list_contents= string.strip(rpm_list_contents)
+
+            if rpm_list_contents == "":
+                Message( "No RPMs listed in file to delete." )
+                return
+
+            rpm_list= string.join(string.split(rpm_list_contents))
+            
+            Message( "Deleting these RPMs:" )
+            Message( rpm_list_contents )
+            
+            rc= os.system( "%s -ev %s" % (RPM_PATH, rpm_list) )
+
+            if rc != 0:
+                Error( "Unable to delete RPMs, continuing. rc=%d" % rc )
+            else:
+                Message( "RPMs deleted successfully." )
+            
+        else:
+            Message( "No RPMs list file found." )
 
 
 
@@ -203,7 +258,7 @@ if __name__ == "__main__":
         pid= string.strip(file(NODEUPDATE_PID_FILE).readline())
         if pid <> "":
             if os.system("/bin/kill -0 %s > /dev/null 2>&1" % pid) == 0:
-                print "It appears we are already running, exiting."
+                Message( "It appears we are already running, exiting." )
                 sys.exit(1)
                     
     # write out our process id
@@ -214,9 +269,12 @@ if __name__ == "__main__":
     
     nodeupdate= NodeUpdate(doReboot)
     if not nodeupdate:
-        print "Unable to initialize."
+        Error( "Unable to initialize." )
     else:
-        nodeupdate.CheckForUpdates()        
+        nodeupdate.RemoveRPMS()
+        nodeupdate.CheckForUpdates()
+        Message( "\nUpdate complete." )
 
     # remove the PID file
     os.unlink( NODEUPDATE_PID_FILE )
+
