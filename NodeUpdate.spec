@@ -1,6 +1,11 @@
 %define name NodeUpdate
-%define version 0.3
+%define version 0.4
 %define release 1.planetlab%{?date:.%{date}}
+
+Vendor: PlanetLab
+Packager: PlanetLab Central <support@planet-lab.org>
+Distribution: PlanetLab 3.0
+URL: http://cvs.planet-lab.org/cvs/NodeUpdate
 
 Summary: PlanetLab service to periodically update node RPMS
 Name: %{name}
@@ -8,7 +13,6 @@ Version: %{version}
 Release: %{release}
 Requires: python2 >= 2.2, yum >= 2.0.3-3_planetlab
 Copyright: GPL
-URL: http://www.planet-lab.org
 Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}root
