@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.2
-%define release 3
+%define release 3.planetlab%{?date:.%{date}}
 
 Summary: PlanetLab service to periodically update node RPMS
 Name: %{name}
