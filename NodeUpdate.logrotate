@@ -1,0 +1,7 @@
+/var/log/NodeUpdate.log {
+    compress
+    daily
+    notifempty
+    rotate 5
+    missingok
+}
