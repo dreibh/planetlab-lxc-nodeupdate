@@ -55,7 +55,7 @@ import string
 NODEUPDATE_PID_FILE= "/var/run/NodeUpdate.pid"
 
 # variables for cron file creation
-TARGET_SCRIPT = '(echo && date && echo && /usr/local/planetlab/bin/NodeUpdate.py) >>/var/log/NodeUpdate.log 2>&1'
+TARGET_SCRIPT = '(echo && date && echo && /usr/local/planetlab/bin/NodeUpdate.py start) >>/var/log/NodeUpdate.log 2>&1'
 TARGET_DESC = 'Update node RPMs periodically'
 TARGET_USER = 'root'
 TARGET_SHELL = '/bin/bash'
