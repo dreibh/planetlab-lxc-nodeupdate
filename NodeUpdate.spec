@@ -12,7 +12,7 @@ URL: http://www.planet-lab.org
 Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}root
-Requires: cron
+Requires: vixie-cron
 
 %description
 PlanetLab service to periodically update node RPMS
