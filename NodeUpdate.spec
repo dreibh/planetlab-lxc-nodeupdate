@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.4
-%define release 2.planetlab%{?date:.%{date}}
+%define release 3.planetlab%{?date:.%{date}}
 
 Vendor: PlanetLab
 Packager: PlanetLab Central <support@planet-lab.org>
@@ -16,7 +16,7 @@ Copyright: GPL
 Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}root
-Requires: vixie-cron
+Requires: vixie-cron, logrotate
 
 %description
 PlanetLab service to periodically update node RPMS
@@ -29,8 +29,8 @@ PlanetLab service to periodically update node RPMS
 
 
 %install
-mkdir -p $RPM_BUILD_ROOT/usr/local/planetlab/bin
-cp NodeUpdate.py $RPM_BUILD_ROOT/usr/local/planetlab/bin/
+install -D -m 755 NodeUpdate.py $RPM_BUILD_ROOT/usr/local/planetlab/bin/NodeUpdate.py
+install -D -m 644 NodeUpdate.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/NodeUpdate
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
@@ -38,14 +38,12 @@ cp NodeUpdate.py $RPM_BUILD_ROOT/usr/local/planetlab/bin/
 %files
 %defattr(-,root,root)
 %attr(0755,root,root) /usr/local/planetlab/bin/NodeUpdate.py
+%attr(0644,root,root) /etc/logrotate.d/NodeUpdate
 
 %pre
 
 %post
-if [ "$1" = 1 ]; then
-	/usr/local/planetlab/bin/NodeUpdate.py updatecron
-fi
-
+/usr/local/planetlab/bin/NodeUpdate.py updatecron
 
 %preun
 if [ "$1" = 0 ]; then
@@ -57,6 +55,10 @@ fi
 
 
 %changelog
+* Tue Nov 16 2004 Mark Huang <mlhuang@cs.princeton.edu>
+- cron job now dumps to /var/log/NodeUpdate instead of spewing mail
+- cron job now runs once a day instead of once an hour
+
 * Tue Jun 22 2004 Aaron K <alk@cs.princeton.edu>
 - added better support for different groups
 - added support for deleting rpms
