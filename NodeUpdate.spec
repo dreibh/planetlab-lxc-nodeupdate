@@ -11,7 +11,7 @@ Copyright: GPL
 URL: http://www.planet-lab.org
 Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
-BuildRoot: /tmp/%{name}-%{version}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}root
 
 %description
 PlanetLab service to periodically update node RPMS
@@ -28,6 +28,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/local/planetlab/bin
 cp NodeUpdate.py $RPM_BUILD_ROOT/usr/local/planetlab/bin/
 
 %clean
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
