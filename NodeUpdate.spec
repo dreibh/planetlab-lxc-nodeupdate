@@ -1,6 +1,6 @@
 %define name NodeUpdate
-%define version 0.2
-%define release 3.planetlab%{?date:.%{date}}
+%define version 0.3
+%define release 1.planetlab%{?date:.%{date}}
 
 Summary: PlanetLab service to periodically update node RPMS
 Name: %{name}
@@ -52,6 +52,10 @@ fi
 
 
 %changelog
+* Tue Jun 22 2004 Aaron K <alk@cs.princeton.edu>
+- added better support for different groups
+- added support for deleting rpms
+
 * Mon Apr 12 2004 Aaron K <alk@cs.princeton.edu>
 - updated for new build process
 
