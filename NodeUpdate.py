@@ -55,9 +55,10 @@ import string
 NODEUPDATE_PID_FILE= "/var/run/NodeUpdate.pid"
 
 # variables for cron file creation
-TARGET_SCRIPT = '/usr/local/planetlab/bin/NodeUpdate.py'
+TARGET_SCRIPT = '(echo && date && echo && /usr/local/planetlab/bin/NodeUpdate.py) >>/var/log/NodeUpdate.log 2>&1'
 TARGET_DESC = 'Update node RPMs periodically'
 TARGET_USER = 'root'
+TARGET_SHELL = '/bin/bash'
 CRON_FILE = '/etc/cron.d/NodeUpdate.cron'
 
 YUM_PATH = "/usr/bin/yum"
@@ -98,16 +99,21 @@ def Error(Str):
     print Str
 
 
-# create an entry in /etc/cron.d so we run periodically
-# we will be run once an hour at a 0-59 random offset
+# create an entry in /etc/cron.d so we run periodically.
+# we will be run once a day at a 0-59 minute random offset
+# into a 0-23 random hour
 def UpdateCronFile():
     try:
+        
         randomMinute= Random().randrange( 0, 59, 1 );
+        randomHour= Random().randrange( 0, 23, 1 );
         
         f = open( CRON_FILE, 'w' );
         f.write( "# %s\n" % (TARGET_DESC) );
         f.write( "MAILTO=%s\n" % (TARGET_USER) );
-        f.write( "%s * * * * %s %s\n\n" % (randomMinute, TARGET_USER, TARGET_SCRIPT) );
+        f.write( "SHELL=%s\n" % (TARGET_SHELL) );
+        f.write( "%s %s * * * %s %s\n\n" %
+                 (randomMinute, randomHour, TARGET_USER, TARGET_SCRIPT) );
         f.close()
     
         print( "Created new cron.d entry." )
