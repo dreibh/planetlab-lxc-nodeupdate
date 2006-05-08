@@ -168,11 +168,11 @@ class NodeUpdate:
                     
         Message( "\nUpdating PlanetLab group" )
         os.system( "%s -y groupupdate \"PlanetLab\"" %
-                   (YUM_PATH,SSL_CERT_DIR) )
+                   (YUM_PATH) )
 
         Message( "\nUpdating rest of system" )
         os.system( "%s -y update" %
-                   (YUM_PATH,SSL_CERT_DIR) )
+                   (YUM_PATH) )
 
         Message( "\nChecking for extra groups to update" )
         if os.access(EXTRA_GROUPS_FILE, os.R_OK) and \
@@ -185,7 +185,7 @@ class NodeUpdate:
                 for group in string.split(extra_groups_contents,"\n"):
                     Message( "\nUpdating %s group" % group )
                     os.system( "%s -y groupupdate \"%s\"" %
-                               (YUM_PATH,SSL_CERT_DIR,group) )
+                               (YUM_PATH,group) )
         else:
             Message( "No extra groups file found" )
             
