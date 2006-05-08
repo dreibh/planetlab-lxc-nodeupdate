@@ -167,11 +167,11 @@ class NodeUpdate:
             Message( "\nIgnoring any reboot flags set by RPMs" );
                     
         Message( "\nUpdating PlanetLab group" )
-        os.system( "%s --sslcertdir=%s -y groupupdate \"PlanetLab\"" %
+        os.system( "%s -y groupupdate \"PlanetLab\"" %
                    (YUM_PATH,SSL_CERT_DIR) )
 
         Message( "\nUpdating rest of system" )
-        os.system( "%s --sslcertdir=%s -y update" %
+        os.system( "%s -y update" %
                    (YUM_PATH,SSL_CERT_DIR) )
 
         Message( "\nChecking for extra groups to update" )
@@ -184,7 +184,7 @@ class NodeUpdate:
             else:
                 for group in string.split(extra_groups_contents,"\n"):
                     Message( "\nUpdating %s group" % group )
-                    os.system( "%s --sslcertdir=%s -y groupupdate \"%s\"" %
+                    os.system( "%s -y groupupdate \"%s\"" %
                                (YUM_PATH,SSL_CERT_DIR,group) )
         else:
             Message( "No extra groups file found" )
