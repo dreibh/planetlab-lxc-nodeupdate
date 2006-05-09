@@ -175,14 +175,22 @@ class NodeUpdate:
 
         if self.doReboot == 0:
             Message( "\nIgnoring any reboot flags set by RPMs" );
+
+        Message( "\nChecking if yum supports SSL certificate checks" )
+        if os.system( "%s --help | grep -q sslcertdir" % YUM_PATH ) == 0:
+            Message( "Yes, using --sslcertdir option" )
+            sslcertdir = "--sslcertdir=" + SSL_CERT_DIR
+        else:
+            Message( "No, not using --sslcertdir option" )
+            sslcertdir = ""
                     
         Message( "\nUpdating PlanetLab group" )
-        os.system( "%s -y groupupdate \"PlanetLab\"" %
-                   (YUM_PATH) )
+        os.system( "%s %s -y groupupdate \"PlanetLab\"" %
+                   (YUM_PATH, sslcertdir) )
 
         Message( "\nUpdating rest of system" )
-        os.system( "%s -y update" %
-                   (YUM_PATH) )
+        os.system( "%s %s -y update" %
+                   (YUM_PATH, sslcertdir) )
 
         Message( "\nChecking for extra groups to update" )
         if os.access(EXTRA_GROUPS_FILE, os.R_OK) and \
@@ -194,8 +202,8 @@ class NodeUpdate:
             else:
                 for group in string.split(extra_groups_contents,"\n"):
                     Message( "\nUpdating %s group" % group )
-                    os.system( "%s -y groupupdate \"%s\"" %
-                               (YUM_PATH,group) )
+                    os.system( "%s %s -y groupupdate \"%s\"" %
+                               (YUM_PATH, sslcertdir, group) )
         else:
             Message( "No extra groups file found" )
             
