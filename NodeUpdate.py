@@ -65,6 +65,8 @@ YUM_PATH = "/usr/bin/yum"
 
 RPM_PATH = "/bin/rpm"
 
+RPM_GPG_PATH = "/etc/pki/rpm-gpg"
+
 
 # location of file containing http/https proxy info, if needed
 PROXY_FILE = '/etc/planetlab/http_proxy'
@@ -152,6 +154,14 @@ class NodeUpdate:
         else:
             Message( "Not using any proxy." )
             return 0
+
+
+    def InstallKeys( self ):
+        Message( "\nRemoving any existing GPG signing keys from the RPM database" )
+        os.system( "%s --allmatches -e gpg-pubkey" % RPM_PATH )
+
+        Message( "\nInstalling all GPG signing keys in %s" % RPM_GPG_PATH )
+        os.system( "%s --import %s/*" % (RPM_PATH, RPM_GPG_PATH) )
 
 
     def ClearRebootFlag( self ):
@@ -278,6 +288,7 @@ if __name__ == "__main__":
         Error( "Unable to initialize." )
     else:
         nodeupdate.RemoveRPMS()
+        nodeupdate.InstallKeys()
         nodeupdate.CheckForUpdates()
         Message( "\nUpdate complete." )
 
