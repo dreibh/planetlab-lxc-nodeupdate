@@ -12,7 +12,7 @@ Name: %{name}
 Version: %{version}
 Release: %{release}
 Requires: python2 >= 2.2, yum >= 2.0.3-3_planetlab
-Copyright: GPL
+License: GPL
 Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}root
