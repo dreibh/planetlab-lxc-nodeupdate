@@ -37,7 +37,7 @@ install -D -m 644 NodeUpdate.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/NodeUpdat
 
 %files
 %defattr(-,root,root)
-%attr(0755,root,root) /usr/local/planetlab/bin/NodeUpdate.py
+%attr(0755,root,root) /usr/local/planetlab/bin/NodeUpdate.py*
 %attr(0644,root,root) /etc/logrotate.d/NodeUpdate
 
 %pre
