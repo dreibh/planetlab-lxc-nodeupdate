@@ -29,7 +29,7 @@ PlanetLab service to periodically update node RPMS
 
 
 %install
-install -D -m 755 NodeUpdate.py $RPM_BUILD_ROOT/usr/local/planetlab/bin/NodeUpdate.py
+install -D -m 755 NodeUpdate.py $RPM_BUILD_ROOT/usr/bin/NodeUpdate.py
 install -D -m 644 NodeUpdate.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/NodeUpdate
 
 %clean
@@ -37,17 +37,17 @@ install -D -m 644 NodeUpdate.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/NodeUpdat
 
 %files
 %defattr(-,root,root)
-%attr(0755,root,root) /usr/local/planetlab/bin/NodeUpdate.py*
+%attr(0755,root,root) /usr/planetlab/bin/NodeUpdate.py*
 %attr(0644,root,root) /etc/logrotate.d/NodeUpdate
 
 %pre
 
 %post
-/usr/local/planetlab/bin/NodeUpdate.py updatecron
+/usr/planetlab/bin/NodeUpdate.py updatecron
 
 %preun
 if [ "$1" = 0 ]; then
-	/usr/local/planetlab/bin/NodeUpdate.py removecron
+	/usr/planetlab/bin/NodeUpdate.py removecron
 fi
 
 
