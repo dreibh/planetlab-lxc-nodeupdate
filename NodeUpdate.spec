@@ -37,17 +37,17 @@ install -D -m 644 NodeUpdate.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/NodeUpdat
 
 %files
 %defattr(-,root,root)
-%attr(0755,root,root) /usr/planetlab/bin/NodeUpdate.py*
+%attr(0755,root,root) /usr/bin/NodeUpdate.py*
 %attr(0644,root,root) /etc/logrotate.d/NodeUpdate
 
 %pre
 
 %post
-/usr/planetlab/bin/NodeUpdate.py updatecron
+/usr/bin/NodeUpdate.py updatecron
 
 %preun
 if [ "$1" = 0 ]; then
-	/usr/planetlab/bin/NodeUpdate.py removecron
+	/usr/bin/NodeUpdate.py removecron
 fi
 
 
