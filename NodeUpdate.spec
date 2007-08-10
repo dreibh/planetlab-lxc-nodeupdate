@@ -1,10 +1,10 @@
 %define name NodeUpdate
-%define version 0.4
-%define release 4%{?pldistro:.%{pldistro}}%{?date:.%{date}}
+%define version 0.5
+%define release 1%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
 Vendor: PlanetLab
 Packager: PlanetLab Central <support@planet-lab.org>
-Distribution: PlanetLab 3.0
+Distribution: PlanetLab 4.1
 URL: http://cvs.planet-lab.org/cvs/NodeUpdate
 
 Summary: PlanetLab service to periodically update node RPMS
@@ -55,6 +55,10 @@ fi
 
 
 %changelog
+* Fri Aug 10 2007 Faiyaz Ahmed <faiyaza@cs.princeton.edu>
+- Rebuild RPM Database nightly to avoid corruption
+- Move working directory from /usr/local to /usr/bin
+
 * Tue Nov 16 2004 Mark Huang <mlhuang@cs.princeton.edu>
 - cron job now dumps to /var/log/NodeUpdate instead of spewing mail
 - cron job now runs once a day instead of once an hour
