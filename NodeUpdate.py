@@ -60,14 +60,14 @@ def UpdateCronFile():
     try:
         
         randomMinute= Random().randrange( 0, 59, 1 );
-        randomHour= Random().randrange( 0, 23, 1 );
+        randomHour= Random().randrange( 0, 11, 1 );
         
         f = open( CRON_FILE, 'w' );
         f.write( "# %s\n" % (TARGET_DESC) );
         f.write( "MAILTO=%s\n" % (TARGET_USER) );
         f.write( "SHELL=%s\n" % (TARGET_SHELL) );
-        f.write( "%s %s * * * %s %s\n\n" %
-                 (randomMinute, randomHour, TARGET_USER, TARGET_SCRIPT) );
+        f.write( "%s %s,%s * * * %s %s\n\n" %
+                 (randomMinute, randomHour, randomHour + 12, TARGET_USER, TARGET_SCRIPT) );
         f.close()
     
         print( "Created new cron.d entry." )
