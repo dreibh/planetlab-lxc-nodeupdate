@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.5
-%define release 1%{?pldistro:.%{pldistro}}%{?date:.%{date}}
+%define release 2%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
 Vendor: PlanetLab
 Packager: PlanetLab Central <support@planet-lab.org>
