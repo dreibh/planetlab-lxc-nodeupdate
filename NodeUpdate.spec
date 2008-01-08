@@ -1,11 +1,18 @@
+#
+# $Id$
+#
+%define url $URL$
+
 %define name NodeUpdate
 %define version 0.5
-%define release 2%{?pldistro:.%{pldistro}}%{?date:.%{date}}
+%define taglevel 2
+
+%define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
 Vendor: PlanetLab
 Packager: PlanetLab Central <support@planet-lab.org>
-Distribution: PlanetLab 4.1
-URL: http://cvs.planet-lab.org/cvs/NodeUpdate
+Distribution: PlanetLab %{plrelease}
+URL: %(echo %{url} | cut -d ' ' -f 2)
 
 Summary: PlanetLab service to periodically update node RPMS
 Name: %{name}
