@@ -3,6 +3,10 @@
 import sys, os
 from random import Random
 import string
+from types import StringTypes
+
+from time import strftime
+TIMEFORMAT="%Y-%m-%d %H:%M:%S"
 
 NODEUPDATE_PID_FILE= "/var/run/NodeUpdate.pid"
 
@@ -36,20 +40,24 @@ SSL_CERT_DIR='/mnt/cdrom/bootme/cacert/'
 EXTRA_GROUPS_FILE= '/etc/planetlab/extra-node-groups'
 
 # file containing a list of rpms that we should attempt to delete
-# before we updating everything else. this list is not
-# removed with 'yum remove', because that could accidently remove
-# dependency rpms that were not intended to be deleted.
+# before updating everything else. This list is not removed with 
+# 'yum remove', because that could accidently remove dependency rpms
+# that were not intended to be deleted.
 DELETE_RPM_LIST_FILE= '/etc/planetlab/delete-rpm-list'
 
 
 # print out a message only if we are displaying output
-def Message(Str):
+def Message(message):
     if displayOutput:
-        print Str
-
+        if isinstance(message,StringTypes) and len(message) >=2 and message[0]=="\n":
+            print "\n",
+            message=message[1:]
+        print strftime(TIMEFORMAT),
+        print message
 
 # print out a message only if we are displaying output
 def Error(Str):
+    print strftime(TIMEFORMAT),
     print Str
 
 
@@ -97,7 +105,7 @@ class NodeUpdate:
     
 
     def CheckProxy( self ):
-        Message( "Checking existance of proxy config file..." )
+        Message( "Checking existence of proxy config file..." )
         
         if os.access(PROXY_FILE, os.R_OK) and os.path.isfile(PROXY_FILE):
             self.HTTP_PROXY= string.strip(file(PROXY_FILE,'r').readline())
@@ -136,13 +144,21 @@ class NodeUpdate:
             Message( "No, not using --sslcertdir option" )
             sslcertdir = ""
                     
+        yum_options=""
+        Message( "\nChecking if yum supports --verbose" )
+        if os.system( "%s --help | grep -q verbose" % YUM_PATH ) == 0:
+            Message( "Yes, using --verbose option" )
+            yum_options += " --verbose"
+        else:
+            Message( "No, not using --verbose option" )
+                    
         Message( "\nUpdating PlanetLab group" )
-        os.system( "%s %s -y groupupdate \"PlanetLab\"" %
-                   (YUM_PATH, sslcertdir) )
+        os.system( "%s %s %s -y groupupdate \"PlanetLab\"" %
+                   (YUM_PATH, yum_options, sslcertdir) )
 
         Message( "\nUpdating rest of system" )
-        os.system( "%s %s -y update" %
-                   (YUM_PATH, sslcertdir) )
+        os.system( "%s %s %s -y update" %
+                   (YUM_PATH, yum_options, sslcertdir) )
 
         Message( "\nChecking for extra groups to update" )
         if os.access(EXTRA_GROUPS_FILE, os.R_OK) and \
@@ -154,8 +170,8 @@ class NodeUpdate:
             else:
                 for group in string.split(extra_groups_contents,"\n"):
                     Message( "\nUpdating %s group" % group )
-                    os.system( "%s %s -y groupupdate \"%s\"" %
-                               (YUM_PATH, sslcertdir, group) )
+                    os.system( "%s %s %s -y groupupdate \"%s\"" %
+                               (YUM_PATH, yum_options, sslcertdir, group) )
         else:
             Message( "No extra groups file found" )
             
