@@ -5,7 +5,7 @@
 
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 2
+%define taglevel 3
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -62,6 +62,9 @@ fi
 
 
 %changelog
+* Tue Jul 08 2008 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-3
+- more verbose : invoke yum with --verbose, and print timestamps
+
 * Fri Aug 10 2007 Faiyaz Ahmed <faiyaza@cs.princeton.edu>
 - Rebuild RPM Database nightly to avoid corruption
 - Move working directory from /usr/local to /usr/bin
