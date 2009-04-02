@@ -55,7 +55,7 @@ def Message(message):
         print strftime(TIMEFORMAT),
         print message
 
-# print out a message only if we are displaying output
+# always print errors
 def Error(Str):
     print strftime(TIMEFORMAT),
     print Str
@@ -72,6 +72,7 @@ def UpdateCronFile():
         
         f = open( CRON_FILE, 'w' );
         f.write( "# %s\n" % (TARGET_DESC) );
+        ### xxx is root aliased to the support mailing list ?
         f.write( "MAILTO=%s\n" % (TARGET_USER) );
         f.write( "SHELL=%s\n" % (TARGET_SHELL) );
         f.write( "%s %s,%s * * * %s %s\n\n" %
@@ -138,19 +139,19 @@ class NodeUpdate:
 
         Message( "\nChecking if yum supports SSL certificate checks" )
         if os.system( "%s --help | grep -q sslcertdir" % YUM_PATH ) == 0:
-            Message( "Yes, using --sslcertdir option" )
+            Message( "It does, using --sslcertdir option" )
             sslcertdir = "--sslcertdir=" + SSL_CERT_DIR
         else:
-            Message( "No, not using --sslcertdir option" )
+            Message( "Unsupported, not using --sslcertdir option" )
             sslcertdir = ""
                     
         yum_options=""
         Message( "\nChecking if yum supports --verbose" )
         if os.system( "%s --help | grep -q verbose" % YUM_PATH ) == 0:
-            Message( "Yes, using --verbose option" )
+            Message( "It does, using --verbose option" )
             yum_options += " --verbose"
         else:
-            Message( "No, not using --verbose option" )
+            Message( "Unsupported, not using --verbose option" )
                     
         Message( "\nUpdating PlanetLab group" )
         os.system( "%s %s %s -y groupupdate \"PlanetLab\"" %
@@ -179,6 +180,12 @@ class NodeUpdate:
             Message( "\nAt least one update requested the system be rebooted" )
             self.ClearRebootFlag()
             os.system( "/sbin/shutdown -r now" )
+            # in the case where shutdown would hang, e.g. b/c of an initscript 
+            # leave it 10 minutes and brute-force kill
+            DELAY=10*60
+            time.sleep(DELAY)
+            # bad, but not worse than a PCU-driven powercycle
+            os.system ("sync; sleep 1; sync; reboot")
 
     def RebuildRPMdb( self ):
         Message( "\nRebuilding RPM Database." )
@@ -186,6 +193,13 @@ class NodeUpdate:
         except Exception, err: print "RebuildRPMdb: %s" % err
         try: os.system( "%s --rebuilddb" % RPM_PATH )
         except Exception, err: print "RebuildRPMdb: %s" % err
+
+    def YumCleanAll ( self ):
+        Message ("\nCleaning all yum cache (yum clean all)")
+        try:
+            os.system( "yum clean all")
+        except:
+            pass
 
     def RemoveRPMS( self ):
 
@@ -218,9 +232,10 @@ class NodeUpdate:
 
 if __name__ == "__main__":
 
-    # if we are invoked with 'start', display the output. this
-    # is usefull for running something under cron and as a service
-    # (at startup), so the cron only outputs errors and doesn't
+    # if we are invoked with 'start', display the output. 
+    # this is useful for running something silently 
+    # under cron and as a service (at startup), 
+    # so the cron only outputs errors and doesn't
     # generate mail when it works correctly
 
     displayOutput= 0
@@ -231,8 +246,9 @@ if __name__ == "__main__":
     
     doReboot= 1
 
-    if "start" in sys.argv:
+    if "start" in sys.argv or "display" in sys.argv:
         displayOutput= 1
+        Message ("\nTurning on messages")
 
     if "noreboot" in sys.argv:
         doReboot= 0
@@ -272,6 +288,7 @@ if __name__ == "__main__":
         nodeupdate.RebuildRPMdb()
         nodeupdate.RemoveRPMS()
         nodeupdate.InstallKeys()
+        nodeupdate.YumCleanAll()
         nodeupdate.CheckForUpdates()
         Message( "\nUpdate complete." )
 
