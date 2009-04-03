@@ -180,12 +180,6 @@ class NodeUpdate:
             Message( "\nAt least one update requested the system be rebooted" )
             self.ClearRebootFlag()
             os.system( "/sbin/shutdown -r now" )
-            # in the case where shutdown would hang, e.g. b/c of an initscript 
-            # leave it 10 minutes and brute-force kill
-            DELAY=10*60
-            time.sleep(DELAY)
-            # bad, but not worse than a PCU-driven powercycle
-            os.system ("sync; sleep 1; sync; reboot")
 
     def RebuildRPMdb( self ):
         Message( "\nRebuilding RPM Database." )
