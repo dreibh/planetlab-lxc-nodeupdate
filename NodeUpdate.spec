@@ -5,7 +5,7 @@
 
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 3
+%define taglevel 4
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -62,6 +62,10 @@ fi
 
 
 %changelog
+* Tue Apr 07 2009 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-4
+- invokes 'yum clean all' before updates
+- as it is more reliable, although suboptimal
+
 * Tue Jul 08 2008 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-3
 - more verbose : invoke yum with --verbose, and print timestamps
 
