@@ -37,6 +37,8 @@ SSL_CERT_DIR='/mnt/cdrom/bootme/cacert/'
 
 # file containing the list of extensions this node has, each
 # correspond to a package group in yum repository.
+# this is expected to be updated from the 'extensions tag' 
+# through the 'extensions.php' nodeconfig script
 EXTENSIONS_FILE='/etc/planetlab/extensions'
 
 # file containing a list of rpms that we should attempt to delete
