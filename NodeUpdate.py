@@ -35,9 +35,9 @@ REBOOT_FLAG = '/etc/planetlab/update-reboot'
 # location of directory containing boot server ssl certs
 SSL_CERT_DIR='/mnt/cdrom/bootme/cacert/'
 
-# file containing list of extra groups to attempt to update,
-# if necessary.
-EXTRA_GROUPS_FILE= '/etc/planetlab/extra-node-groups'
+# file containing the list of extensions this node has, each
+# correspond to a package group in yum repository.
+EXTENSIONS_FILE='/etc/planetlab/extensions'
 
 # file containing a list of rpms that we should attempt to delete
 # before updating everything else. This list is not removed with 
@@ -161,20 +161,22 @@ class NodeUpdate:
         os.system( "%s %s %s -y update" %
                    (YUM_PATH, yum_options, sslcertdir) )
 
-        Message( "\nChecking for extra groups to update" )
-        if os.access(EXTRA_GROUPS_FILE, os.R_OK) and \
-           os.path.isfile(EXTRA_GROUPS_FILE):
-            extra_groups_contents= file(EXTRA_GROUPS_FILE).read()
-            extra_groups_contents= string.strip(extra_groups_contents)
-            if extra_groups_contents == "":
+        Message( "\nChecking for extra groups (extensions) to update" )
+        if os.access(EXTENSIONS_FILE, os.R_OK) and \
+           os.path.isfile(EXTENSIONS_FILE):
+            extensions_contents= file(EXTENSIONS_FILE).read()
+            extensions_contents= string.strip(extensions_contents)
+            if extensions_contents == "":
                 Message( "No extra groups found in file." )
             else:
-                for group in string.split(extra_groups_contents,"\n"):
+                extensions_contents.strip()
+                for extension in extensions_contents.split():
+                    group = "extension%s" % extension
                     Message( "\nUpdating %s group" % group )
                     os.system( "%s %s %s -y groupupdate \"%s\"" %
                                (YUM_PATH, yum_options, sslcertdir, group) )
         else:
-            Message( "No extra groups file found" )
+            Message( "No extensions file found" )
             
         if os.access(REBOOT_FLAG, os.R_OK) and os.path.isfile(REBOOT_FLAG) and self.doReboot:
             Message( "\nAt least one update requested the system be rebooted" )
