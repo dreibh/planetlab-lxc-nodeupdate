@@ -5,7 +5,7 @@
 
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 4
+%define taglevel 5
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -62,6 +62,9 @@ fi
 
 
 %changelog
+* Mon Sep 07 2009 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-5
+- searches the extensions file /etc/planetlab/extensions rather than the former /etc/planetlab/extra-node-groups
+
 * Tue Apr 07 2009 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-4
 - invokes 'yum clean all' before updates
 - as it is more reliable, although suboptimal
