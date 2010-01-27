@@ -36,8 +36,9 @@ PlanetLab service to periodically update node RPMS
 
 
 %install
+echo "* Installing NodeUpdate node-side files"
 install -D -m 755 NodeUpdate.py $RPM_BUILD_ROOT/usr/bin/NodeUpdate.py
-install -D -m 644 NodeUpdate.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/NodeUpdate
+install -D -m 644 logrotate/NodeUpdate $RPM_BUILD_ROOT/etc/logrotate.d/NodeUpdate
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
@@ -47,19 +48,13 @@ install -D -m 644 NodeUpdate.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/NodeUpdat
 %attr(0755,root,root) /usr/bin/NodeUpdate.py*
 %attr(0644,root,root) /etc/logrotate.d/NodeUpdate
 
-%pre
-
 %post
 /usr/bin/NodeUpdate.py updatecron
 
 %preun
 if [ "$1" = 0 ]; then
-	/usr/bin/NodeUpdate.py removecron
+    /usr/bin/NodeUpdate.py removecron
 fi
-
-
-%postun
-
 
 %changelog
 * Mon Sep 07 2009 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-5
