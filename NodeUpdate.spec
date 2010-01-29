@@ -5,7 +5,7 @@
 
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 5
+%define taglevel 6
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -57,6 +57,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Fri Jan 29 2010 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-6
+- new module layout - no functional change
+
 * Mon Sep 07 2009 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-5
 - searches the extensions file /etc/planetlab/extensions rather than the former /etc/planetlab/extra-node-groups
 
