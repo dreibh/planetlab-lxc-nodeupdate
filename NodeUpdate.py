@@ -156,7 +156,7 @@ class NodeUpdate:
             Message( "Unsupported, not using --verbose option" )
                     
         Message( "\nUpdating PlanetLab group" )
-        os.system( "%s %s %s -y groupupdate \"PlanetLab\"" %
+        os.system( "%s %s %s -y groupinstall \"PlanetLab\"" %
                    (YUM_PATH, yum_options, sslcertdir) )
 
         Message( "\nUpdating rest of system" )
@@ -175,7 +175,7 @@ class NodeUpdate:
                 for extension in extensions_contents.split():
                     group = "extension%s" % extension
                     Message( "\nUpdating %s group" % group )
-                    os.system( "%s %s %s -y groupupdate \"%s\"" %
+                    os.system( "%s %s %s -y groupinstall \"%s\"" %
                                (YUM_PATH, yum_options, sslcertdir, group) )
         else:
             Message( "No extensions file found" )
