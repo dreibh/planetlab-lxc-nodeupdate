@@ -5,7 +5,7 @@
 
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 6
+%define taglevel 7
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -57,6 +57,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Wed Jul 14 2010 Daniel Hokka Zakrisson <dhokka@cs.princeton.edu> - nodeupdate-0.5-7
+- Use groupinstall to get new group members.
+
 * Fri Jan 29 2010 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - NodeUpdate-0.5-6
 - new module layout - no functional change
 
