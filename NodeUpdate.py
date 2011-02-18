@@ -23,7 +23,6 @@ RPM_PATH = "/bin/rpm"
 
 RPM_GPG_PATH = "/etc/pki/rpm-gpg"
 
-
 # location of file containing http/https proxy info, if needed
 PROXY_FILE = '/etc/planetlab/http_proxy'
 
@@ -46,6 +45,16 @@ EXTENSIONS_FILE='/etc/planetlab/extensions'
 # 'yum remove', because that could accidently remove dependency rpms
 # that were not intended to be deleted.
 DELETE_RPM_LIST_FILE= '/etc/planetlab/delete-rpm-list'
+
+# ok, so the logic should be simple, just yum update the world
+# however there are many cases in the real life where this 
+# just does not work, because of a glitch somewhere
+# so, we force the update of crucial pkgs independently, as 
+# the whole group is sometimes too much to swallow 
+# this one is builtin
+UPDATE_PACKAGES_BUILTIN=[ 'NodeManager' ]
+# and operations can also try to push a list through a conf_file
+UPDATE_PACKAGES_OPTIONAL_PATH='/etc/planetlab/NodeUpdate.packages'
 
 
 # print out a message only if we are displaying output
@@ -154,7 +163,20 @@ class NodeUpdate:
             yum_options += " --verbose"
         else:
             Message( "Unsupported, not using --verbose option" )
-                    
+        
+        # a configurable list of packages to try and update independently
+        # cautious..
+        try:
+            crucial_packages = []
+            for package in UPDATE_PACKAGES_BUILTIN: crucial_packages.append(package)
+            try: crucial_packages += file(UPDATE_PACKAGES_OPTIONAL_PATH).read().split()
+            except: pass
+            for package in crucial_packages:
+                Message( "\nUpdating crucial package %s" % package)
+                os.system( "%s %s -y update %s" %(YUM_PATH, yum_options, package))
+        except:
+            pass
+
         Message( "\nUpdating PlanetLab group" )
         os.system( "%s %s %s -y groupinstall \"PlanetLab\"" %
                    (YUM_PATH, yum_options, sslcertdir) )
