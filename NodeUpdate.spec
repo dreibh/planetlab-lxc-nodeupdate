@@ -5,7 +5,7 @@
 
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 7
+%define taglevel 8
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -57,6 +57,10 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Fri Feb 18 2011 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-8
+- has a builtin list of packages to update individually (NodeManager for now)
+- plus an optional set that is read from /etc/planetlab/NodeUpdate.packages
+
 * Wed Jul 14 2010 Daniel Hokka Zakrisson <dhokka@cs.princeton.edu> - nodeupdate-0.5-7
 - Use groupinstall to get new group members.
 
