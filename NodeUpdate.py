@@ -52,9 +52,11 @@ DELETE_RPM_LIST_FILE= '/etc/planetlab/delete-rpm-list'
 # so, we force the update of crucial pkgs independently, as 
 # the whole group is sometimes too much to swallow 
 # this one is builtin
-UPDATE_PACKAGES_BUILTIN=[ 'NodeManager' ]
+CRUCIAL_PACKAGES_BUILTIN=[ 'NodeManager' , 'NodeUpdate' ]
 # and operations can also try to push a list through a conf_file
-UPDATE_PACKAGES_OPTIONAL_PATH='/etc/planetlab/NodeUpdate.packages'
+# should use the second one for consistency, try the first one as well for legacy
+CRUCIAL_PACKAGES_OPTIONAL_PATH1='/etc/planetlab/NodeUpdate.packages'
+CRUCIAL_PACKAGES_OPTIONAL_PATH2='/etc/planetlab/crucial-rpm-list'
 
 
 # print out a message only if we are displaying output
@@ -168,8 +170,10 @@ class NodeUpdate:
         # cautious..
         try:
             crucial_packages = []
-            for package in UPDATE_PACKAGES_BUILTIN: crucial_packages.append(package)
-            try: crucial_packages += file(UPDATE_PACKAGES_OPTIONAL_PATH).read().split()
+            for package in CRUCIAL_PACKAGES_BUILTIN: crucial_packages.append(package)
+            try: crucial_packages += file(CRUCIAL_PACKAGES_OPTIONAL_PATH1).read().split()
+            except: pass
+            try: crucial_packages += file(CRUCIAL_PACKAGES_OPTIONAL_PATH2).read().split()
             except: pass
             for package in crucial_packages:
                 Message( "\nUpdating crucial package %s" % package)
@@ -182,8 +186,7 @@ class NodeUpdate:
                    (YUM_PATH, yum_options, sslcertdir) )
 
         Message( "\nUpdating rest of system" )
-        os.system( "%s %s %s -y update" %
-                   (YUM_PATH, yum_options, sslcertdir) )
+        os.system( "%s %s %s -y update" % (YUM_PATH, yum_options, sslcertdir) )
 
         Message( "\nChecking for extra groups (extensions) to update" )
         if os.access(EXTENSIONS_FILE, os.R_OK) and \
@@ -226,24 +229,30 @@ class NodeUpdate:
         Message( "\nLooking for RPMs to be deleted." )
         if os.access(DELETE_RPM_LIST_FILE, os.R_OK) and \
            os.path.isfile(DELETE_RPM_LIST_FILE):
-            rpm_list_contents= file(DELETE_RPM_LIST_FILE).read()
-            rpm_list_contents= string.strip(rpm_list_contents)
+            rpm_list_contents= file(DELETE_RPM_LIST_FILE).read().strip()
 
             if rpm_list_contents == "":
                 Message( "No RPMs listed in file to delete." )
                 return
 
-            rpm_list= string.join(string.split(rpm_list_contents))
+            rpm_list= string.split(rpm_list_contents)
             
-            Message( "Deleting these RPMs:" )
-            Message( rpm_list_contents )
-            
-            rc= os.system( "%s -ev %s" % (RPM_PATH, rpm_list) )
+            Message( "Deleting RPMs from %s: %s" %(DELETE_RPM_LIST_FILE," ".join(rpm_list)))
 
-            if rc != 0:
-                Error( "Unable to delete RPMs, continuing. rc=%d" % rc )
-            else:
-                Message( "RPMs deleted successfully." )
+            # invoke them separately as otherwise one faulty (e.g. already uninstalled)
+            # would prevent the other ones from uninstalling
+            for rpm in rpm_list:
+                # is it installed
+                is_installed = os.system ("%s -q %s"%(RPM_PATH,rpm))==0
+                if not is_installed:
+                    Message ("Ignoring rpm %s marked to delete, already uninstalled"%rpm)
+                    continue
+                uninstalled = os.system( "%s -ev %s" % (RPM_PATH, rpm) )==0
+                if uninstalled:
+                    Message ("Successfully removed RPM %s"%rpm)
+                    continue
+                else:
+                    Error( "Unable to delete RPM %s, continuing. rc=%d" % (rpm,rc ))
             
         else:
             Message( "No RPMs list file found." )
