@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 8
+%define taglevel 9
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -52,6 +52,10 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Fri Jul 01 2011 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-9
+- support /etc/planetlab/NodeUpdate.packages and /etc/planetlab/crucial-rpm-list
+- delete exceptions from delete-rpm-list individually
+
 * Fri Feb 18 2011 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-8
 - has a builtin list of packages to update individually (NodeManager for now)
 - plus an optional set that is read from /etc/planetlab/NodeUpdate.packages
