@@ -252,7 +252,7 @@ class NodeUpdate:
                     Message ("Successfully removed RPM %s"%rpm)
                     continue
                 else:
-                    Error( "Unable to delete RPM %s, continuing. rc=%d" % (rpm,rc ))
+                    Error( "Unable to delete RPM %s, continuing. rc=%d" % (rpm,uninstalled))
             
         else:
             Message( "No RPMs list file found." )
