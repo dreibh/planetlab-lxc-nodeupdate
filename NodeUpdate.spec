@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 9
+%define taglevel 10
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -52,6 +52,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Mon May 06 2013 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-10
+- bugfix in nodeupdate.RemoveRPMS, NodeUpdate.py bails out if rpms can't be removed
+
 * Fri Jul 01 2011 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-9
 - support /etc/planetlab/NodeUpdate.packages and /etc/planetlab/crucial-rpm-list
 - delete exceptions from delete-rpm-list individually
