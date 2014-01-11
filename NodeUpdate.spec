@@ -18,7 +18,7 @@ License: GPL
 Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}root
-Requires: vixie-cron, logrotate
+Requires: cronie, logrotate
 
 %description
 PlanetLab service to periodically update node RPMS
