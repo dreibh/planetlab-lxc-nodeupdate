@@ -52,7 +52,7 @@ DELETE_RPM_LIST_FILE= '/etc/planetlab/delete-rpm-list'
 # so, we force the update of crucial pkgs independently, as 
 # the whole group is sometimes too much to swallow 
 # this one is builtin
-CRUCIAL_PACKAGES_BUILTIN=[ 'NodeUpdate' , 'NodeManager' ]
+CRUCIAL_PACKAGES_BUILTIN=[ 'NodeUpdate' , 'nodemanager' ]
 # and operations can also try to push a list through a conf_file
 # should use the second one for consistency, try the first one as well for legacy
 CRUCIAL_PACKAGES_OPTIONAL_PATH1='/etc/planetlab/NodeUpdate.packages'
