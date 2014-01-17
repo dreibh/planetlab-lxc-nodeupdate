@@ -55,9 +55,14 @@ DELETE_RPM_LIST_FILE= '/etc/planetlab/delete-rpm-list'
 CRUCIAL_PACKAGES_BUILTIN=[ 'NodeUpdate' , 'nodemanager' ]
 # and operations can also try to push a list through a conf_file
 # should use the second one for consistency, try the first one as well for legacy
-CRUCIAL_PACKAGES_OPTIONAL_PATH1='/etc/planetlab/NodeUpdate.packages'
-CRUCIAL_PACKAGES_OPTIONAL_PATH2='/etc/planetlab/crucial-rpm-list'
-
+CRUCIAL_PACKAGES_OPTIONAL_PATHS=[
+    # this is a legacy name, please avoid using this one
+    '/etc/planetlab/NodeUpdate.packages'
+    # file to use with a hand-written conf_file
+    '/etc/planetlab/crucial-rpm-list'
+    # this one could some day be maintained by a predefined config_file
+    '/etc/planetlab/sliceimage-rpm-list'
+]
 
 # print out a message only if we are displaying output
 def Message(message):
@@ -171,10 +176,9 @@ class NodeUpdate:
         try:
             crucial_packages = []
             for package in CRUCIAL_PACKAGES_BUILTIN: crucial_packages.append(package)
-            try: crucial_packages += file(CRUCIAL_PACKAGES_OPTIONAL_PATH1).read().split()
-            except: pass
-            try: crucial_packages += file(CRUCIAL_PACKAGES_OPTIONAL_PATH2).read().split()
-            except: pass
+            for path in CRUCIAL_PACKAGES_OPTIONAL_PATHS:
+                try: crucial_packages += file(CRUCIAL_PACKAGES_OPTIONAL_PATH1).read().split()
+                except: pass
             for package in crucial_packages:
                 # if package is not yet installed, like e.g. slice images, 
                 # need to yum install, not yum update
