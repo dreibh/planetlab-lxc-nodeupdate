@@ -176,8 +176,14 @@ class NodeUpdate:
             try: crucial_packages += file(CRUCIAL_PACKAGES_OPTIONAL_PATH2).read().split()
             except: pass
             for package in crucial_packages:
-                Message( "\nUpdating crucial package %s" % package)
-                os.system( "%s %s -y update %s" %(YUM_PATH, yum_options, package))
+                # if package is not yet installed, like e.g. slice images, 
+                # need to yum install, not yum update
+                if os.system("rpm -q %s > /dev/null"%package)==0:
+                    Message( "\nUpdating crucial package %s" % package)
+                    os.system( "%s %s -y update %s" %(YUM_PATH, yum_options, package))
+                else:
+                    Message( "\Installing crucial package %s" % package)
+                    os.system( "%s %s -y install %s" %(YUM_PATH, yum_options, package))
         except:
             pass
 
