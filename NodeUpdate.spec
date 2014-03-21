@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 10
+%define taglevel 11
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -52,6 +52,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Fri Mar 21 2014 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-11
+- reflect a name change for NodeManager that becomes nodemanager as part of crucial packages
+
 * Mon May 06 2013 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-10
 - bugfix in nodeupdate.RemoveRPMS, NodeUpdate.py bails out if rpms can't be removed
 
