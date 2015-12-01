@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 11
+%define taglevel 12
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -52,6 +52,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Fri Nov 13 2015 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-12
+- crucial nodemanager packages were not using new naming convention
+
 * Fri Mar 21 2014 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-11
 - reflect a name change for NodeManager that becomes nodemanager as part of crucial packages
 
