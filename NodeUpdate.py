@@ -61,13 +61,13 @@ CRUCIAL_PACKAGES_BUILTIN=[
 ]
 # and operations can also try to push a list through a conf_file
 # should use the second one for consistency, try the first one as well for legacy
-CRUCIAL_PACKAGES_OPTIONAL_PATHS=[
+CRUCIAL_PACKAGES_OPTIONAL_PATHS = [
     # this is a legacy name, please avoid using this one
-    '/etc/planetlab/NodeUpdate.packages'
+    '/etc/planetlab/NodeUpdate.packages',
     # file to use with a hand-written conf_file
-    '/etc/planetlab/crucial-rpm-list'
+    '/etc/planetlab/crucial-rpm-list',
     # this one could some day be maintained by a predefined config_file
-    '/etc/planetlab/sliceimage-rpm-list'
+    '/etc/planetlab/sliceimage-rpm-list',
 ]
 
 # print out a message only if we are displaying output
@@ -173,10 +173,13 @@ class NodeUpdate:
         # cautious..
         try:
             crucial_packages = []
-            for package in CRUCIAL_PACKAGES_BUILTIN: crucial_packages.append(package)
+            for package in CRUCIAL_PACKAGES_BUILTIN:
+                crucial_packages.append(package)
             for path in CRUCIAL_PACKAGES_OPTIONAL_PATHS:
-                try: crucial_packages += file(CRUCIAL_PACKAGES_OPTIONAL_PATH1).read().split()
-                except: pass
+                try:
+                    crucial_packages += file(path).read().split()
+                except:
+                    pass
             for package in crucial_packages:
                 # if package is not yet installed, like e.g. slice images, 
                 # need to yum install, not yum update
