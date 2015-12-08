@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 12
+%define taglevel 13
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -52,6 +52,11 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Tue Dec 08 2015 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-13
+- dnf-based nodes (f22/f23) need to call dnf group upgrade
+- and not yum groupinstall; with this patch, slice images
+- will now make it smoothly to the node
+
 * Fri Nov 13 2015 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-12
 - crucial nodemanager packages were not using new naming convention
 
