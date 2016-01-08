@@ -130,14 +130,19 @@ class YumDnf:
     def update_group(self, group):
         # it is important to invoke dnf group *upgrade* and not *update*
         # because the semantics of groups has changed within dnf
+        overall = True
         if HAS_DNF:
-            cmd = \
-                "{} {} -y group upgrade {}".format(self.command, self.options, group)
+            cmd = "{} {} -y group install {}".format(self.command, self.options, group)
+            Message("Invoking {}".format(cmd))
+            if os.system(cmd) != 0: overall = False
+            cmd = "{} {} -y group upgrade {}".format(self.command, self.options, group)
+            Message("Invoking {}".format(cmd))
+            if os.system(cmd) != 0: overall = False
         else:
-            cmd = \
-                "{} {} -y groupinstall {}".format(self.command, self.options, group)
-        Message("Invoking {}".format(cmd))
-        return os.system(cmd) == 0
+            cmd = "{} {} -y groupinstall {}".format(self.command, self.options, group)
+            Message("Invoking {}".format(cmd))
+            if os.system(cmd) != 0: overall = False
+        return overall
 
     ########## update the whole system
     def update_system(self):
