@@ -1,6 +1,6 @@
 %define name NodeUpdate
 %define version 0.5
-%define taglevel 13
+%define taglevel 14
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -52,6 +52,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Sun Jan 10 2016 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-14
+- more robust nodeupdate (again) on dnf-based nodes
+
 * Tue Dec 08 2015 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-13
 - dnf-based nodes (f22/f23) need to call dnf group upgrade
 - and not yum groupinstall; with this patch, slice images
