@@ -1,6 +1,6 @@
 %define name NodeUpdate
-%define version 0.5
-%define taglevel 14
+%define version 1.0
+%define taglevel 0
 
 %define release %{taglevel}%{?pldistro:.%{pldistro}}%{?date:.%{date}}
 
@@ -52,6 +52,9 @@ if [ "$1" = 0 ]; then
 fi
 
 %changelog
+* Mon Jan 07 2019 Thierry <Parmentelat> - nodeupdate-1.0-0
+- ported to python3 + pep8
+
 * Sun Jan 10 2016 Thierry Parmentelat <thierry.parmentelat@sophia.inria.fr> - nodeupdate-0.5-14
 - more robust nodeupdate (again) on dnf-based nodes
 
